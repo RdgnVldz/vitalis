@@ -6,6 +6,9 @@ import { DayCompartments } from "@/components/dashboard/day-compartments";
 import { MedicineList } from "@/components/dashboard/medicine-list";
 
 export default async function DashboardPage() {
+
+  await new Promise((resolve) => setTimeout(resolve, 2500));
+  
   const session = await requireSession();
   const { greeting, dateLabel } = getDayInfo(session.user.timezone);
   const medications = await getMedications(session.user.id);
