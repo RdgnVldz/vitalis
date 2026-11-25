@@ -6,3 +6,4 @@ export const dayparts = {
 } as const;
 
 export type Daypart = keyof typeof dayparts;
+export const daypartOrder: Daypart[] = ["morning", "midday", "evening", "night"];

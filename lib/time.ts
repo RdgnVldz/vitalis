@@ -1,4 +1,6 @@
-function safeZone(timezone: string) {
+function safeZone(timezone: string | null | undefined) {
+  if (!timezone) return "UTC";
+
   try {
     new Intl.DateTimeFormat("en-US", { timeZone: timezone });
     return timezone;
@@ -7,7 +9,10 @@ function safeZone(timezone: string) {
   }
 }
 
-export function getDayInfo(timezone: string, now: Date = new Date()) {
+export function getDayInfo(
+  timezone: string | null | undefined,
+  now: Date = new Date()
+) {
   const zone = safeZone(timezone);
 
   const hour = Number(
