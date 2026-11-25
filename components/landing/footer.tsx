@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { brand } from "@/lib/brand";
 import { Capsule } from "@/components/capsule";
+import { getSession } from "@/lib/session";
 
-export function Footer() {
+export async function Footer() {
+  const session = await getSession();
   const year = new Date().getFullYear();
 
   return (
@@ -23,18 +25,29 @@ export function Footer() {
         </div>
 
         <nav aria-label="Footer" className="flex gap-3">
-          <Link
-            href="/login"
-            className="rounded-full border-2 border-ink px-5 py-2 font-bold hover:bg-ink hover:text-white"
-          >
-            Log in
-          </Link>
-          <Link
-            href="/register"
-            className="rounded-full bg-ink px-5 py-2 font-bold text-white"
-          >
-            Create your account
-          </Link>
+          {session ? (
+            <Link
+              href="/dashboard"
+              className="rounded-full bg-ink px-5 py-2 font-bold text-white"
+            >
+              Go to dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="rounded-full border-2 border-ink px-5 py-2 font-bold hover:bg-ink hover:text-white"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/register"
+                className="rounded-full bg-ink px-5 py-2 font-bold text-white"
+              >
+                Create your account
+              </Link>
+            </>
+          )}
         </nav>
       </div>
 

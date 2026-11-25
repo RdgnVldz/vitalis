@@ -1,12 +1,20 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { brand } from "@/lib/brand";
+import { getSession } from "@/lib/session";
 import { Logo } from "@/components/logo";
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getSession();
+
+  if (session) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="min-h-screen">
       <header className="mx-auto max-w-6xl px-6 py-5">

@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { brand } from "@/lib/brand";
 import { Capsule } from "@/components/capsule";
+import { getSession } from "@/lib/session";
 
-export function Hero() {
+export async function Hero() {
+  const session = await getSession();
+
   return (
     <section className="on-ink bg-ink text-white">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
@@ -17,10 +20,10 @@ export function Hero() {
           </span>
         </Link>
         <Link
-          href="/login"
+          href={session ? "/dashboard" : "/login"}
           className="rounded-full border-2 border-white px-5 py-2 font-bold hover:bg-white hover:text-ink"
         >
-          Log in
+          {session ? "Go to dashboard" : "Log in"}
         </Link>
       </header>
 
@@ -36,10 +39,10 @@ export function Hero() {
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
             <Link
-              href="/register"
+              href={session ? "/dashboard" : "/register"}
               className="rounded-full bg-marigold px-7 py-3.5 text-lg font-bold text-ink"
             >
-              Create your account
+              {session ? "Go to dashboard" : "Create your account"}
             </Link>
             <Link
               href="#day"

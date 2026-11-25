@@ -52,8 +52,15 @@ export function RegisterForm() {
           ? "An account with this email already exists. Use a different email, or log in."
           : "We couldn't create your account. Check your details and try again."
       );
+      
       return;
     }
+
+    // if (error) {
+    //   console.error("Sign-up error:", error);
+    //   setPending(false);
+
+    // }
 
     router.push("/dashboard");
     router.refresh();
