@@ -39,3 +39,7 @@ export function toFieldErrors(error: z.ZodError) {
   }
   return errors;
 }
+
+export function isUuid(value: string) {
+  return z.string().uuid().safeParse(value).success;
+}

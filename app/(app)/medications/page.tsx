@@ -23,7 +23,7 @@ export default async function MedicationsPage() {
         </div>
         <Link
           href="/medications/new"
-          className="rounded-full bg-ink px-7 py-3.5 text-lg font-bold text-white"
+          className="rounded-full bg-ink px-5 py-3.5 text-lg font-bold text-white"
         >
           Add a medicine
         </Link>
@@ -39,14 +39,26 @@ export default async function MedicationsPage() {
       ) : (
         <ul className="mt-10 divide-y-2 divide-ink overflow-hidden rounded-bay border-2 border-ink bg-tablet">
           {medications.map((medication) => (
-            <li key={medication.id} className="p-5">
-              <p className="font-display text-2xl font-extrabold">
-                {medication.name}
-              </p>
-              <p className="mt-1 text-lg text-ink-soft">{medication.dose}</p>
-              {medication.instructions && (
-                <p className="mt-2 text-lg">{medication.instructions}</p>
-              )}
+            <li
+              key={medication.id}
+              className="flex flex-wrap items-start justify-between gap-4 p-5"
+            >
+              <div>
+                <p className="font-display text-2xl font-extrabold">
+                  {medication.name}
+                </p>
+                <p className="mt-1 text-lg text-ink-soft">{medication.dose}</p>
+                {medication.instructions && (
+                  <p className="mt-2 text-lg">{medication.instructions}</p>
+                )}
+              </div>
+              <Link
+                href={`/medications/${medication.id}/edit`}
+                aria-label={`Edit ${medication.name}`}
+                className="rounded-full border-2 border-ink px-5 py-2 font-bold hover:bg-ink hover:text-white"
+              >
+                Edit
+              </Link>
             </li>
           ))}
         </ul>
