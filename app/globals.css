@@ -1,26 +1,79 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --color-*: initial;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-ink: #2a1740;
+  --color-ink-soft: #5b4a70;
+  --color-foil: #eceff3;
+  --color-tablet: #fbfbfd;
+  --color-marigold: #f5b82e;
+  --color-mint: #7cd1b0;
+  --color-orchid: #c77ddb;
+  --color-indigo: #4b4db8;
+  --color-poppy: #d63f2d;
+  --color-white: #ffffff;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-bay: 0.375rem;
+    --animate-close-left: close-left 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-close-right: close-right 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+  @keyframes close-left {
+    from {
+      transform: translateX(-48px);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes close-right {
+    from {
+      transform: translateX(48px);
+    }
+    to {
+      transform: translateX(0);
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  html {
+    font-size: 18px;
+  }
+
+  body {
+    background-color: var(--color-foil);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-indigo);
+    outline-offset: 3px;
+  }
+
+    .on-ink :focus-visible {
+    outline-color: var(--color-marigold);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
 }
