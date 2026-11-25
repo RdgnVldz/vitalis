@@ -10,6 +10,7 @@ import {
   isUuid,
   medicationSchema,
   toFieldErrors,
+  type ArchiveState,
   type MedicationFormState,
 } from "@/lib/validation";
 
@@ -100,6 +101,45 @@ export async function updateMedication(
     return {
       message: "We couldn't find this medicine. It may have been removed.",
       values,
+    };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath("/medications");
+  redirect("/medications");
+}
+
+export async function archiveMedication(
+  id: string,
+  _previous: ArchiveState
+): Promise<ArchiveState> {
+  const session = await requireSession();
+
+  if (!isUuid(id)) {
+    return { message: "We couldn't find this medicine." };
+  }
+
+  let archived: { id: string }[];
+
+  try {
+    archived = await db
+      .update(medications)
+      .set({ active: false })
+      .where(
+        and(
+          eq(medications.id, id),
+          eq(medications.userId, session.user.id),
+          eq(medications.active, true)
+        )
+      )
+      .returning({ id: medications.id });
+  } catch {
+    return { message: "We couldn't remove this medicine. Try again." };
+  }
+
+  if (archived.length === 0) {
+    return {
+      message: "We couldn't find this medicine. It may already be removed.",
     };
   }
 

@@ -43,3 +43,7 @@ export function toFieldErrors(error: z.ZodError) {
 export function isUuid(value: string) {
   return z.string().uuid().safeParse(value).success;
 }
+
+export type ArchiveState = {
+  message?: string;
+};

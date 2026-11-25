@@ -52,13 +52,22 @@ export default async function MedicationsPage() {
                   <p className="mt-2 text-lg">{medication.instructions}</p>
                 )}
               </div>
-              <Link
-                href={`/medications/${medication.id}/edit`}
-                aria-label={`Edit ${medication.name}`}
-                className="rounded-full border-2 border-ink px-5 py-2 font-bold hover:bg-ink hover:text-white"
-              >
-                Edit
-              </Link>
+              <div className="flex gap-2">
+                <Link
+                  href={`/medications/${medication.id}/edit`}
+                  aria-label={`Edit ${medication.name}`}
+                  className="rounded-full border-2 border-ink px-5 py-2 font-bold hover:bg-ink hover:text-white"
+                >
+                  Edit
+                </Link>
+                <Link
+                  href={`/medications/${medication.id}/remove`}
+                  aria-label={`Remove ${medication.name}`}
+                  className="rounded-full border-2 border-ink px-5 py-2 font-bold hover:bg-ink hover:text-white"
+                >
+                  Remove
+                </Link>
+              </div>
             </li>
           ))}
         </ul>
