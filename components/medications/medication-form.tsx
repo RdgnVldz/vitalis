@@ -76,7 +76,7 @@ export function MedicationForm({
           {pending ? pendingLabel : submitLabel}
         </button>
         <Link
-          href="/dashboard"
+          href="/medications"
           className="rounded-full border-2 border-ink px-7 py-3.5 text-lg font-bold"
         >
           Cancel

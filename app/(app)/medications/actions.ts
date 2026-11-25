@@ -47,5 +47,6 @@ export async function createMedication(
   }
 
   revalidatePath("/dashboard");
-  redirect("/dashboard");
+  revalidatePath("/medications");
+  redirect("/medications");
 }

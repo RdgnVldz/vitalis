@@ -13,8 +13,8 @@ export default async function NewMedicationPage() {
 
   return (
     <main className="mx-auto max-w-xl px-6 py-12">
-      <Link href="/dashboard" className="font-bold underline">
-        Back to dashboard
+      <Link href="/medications" className="font-bold underline">
+        Back to medicines
       </Link>
 
       <h1 className="mt-6 text-4xl">Add a medicine</h1>
