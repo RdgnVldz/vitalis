@@ -28,6 +28,12 @@ export default async function NewMedicationPage() {
           submitLabel="Add a medicine"
           pendingLabel="Adding..."
         />
+        <p className="mt-6 text-lg">
+          Rather type it in plain words?{" "}
+        <Link href="/medications/ai" className="font-bold underline">
+          Add with AI
+        </Link>
+      </p>
       </div>
     </main>
   );

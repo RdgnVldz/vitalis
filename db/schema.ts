@@ -167,3 +167,16 @@ export const reminderLog = pgTable(
     ),
   ]
 );
+
+export const aiUsage = pgTable(
+  "ai_usage",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    kind: text("kind").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("ai_usage_user_created_idx").on(table.userId, table.createdAt)]
+);

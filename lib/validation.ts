@@ -113,3 +113,45 @@ export type PushResult = {
   ok: boolean;
   message: string;
 };
+
+export const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+export const aiConfirmSchema = medicationSchema.extend({
+  times: z
+    .array(z.string().regex(TIME_PATTERN, "Pick a valid time."))
+    .min(1, "Add at least one time.")
+    .max(6, "Use six times or fewer."),
+  days: z.array(z.number().int().min(0).max(6)).min(1, "Pick at least one day."),
+});
+
+export type ReviewValues = {
+  name: string;
+  dose: string;
+  instructions: string;
+  times: string[];
+  days: number[];
+};
+
+export type Suggestion = ReviewValues & { assumptions: string };
+
+export type SuggestionState = {
+  message?: string;
+  text?: string;
+  suggestion?: Suggestion;
+};
+
+export type ReviewState = {
+  errors?: Record<string, string>;
+  message?: string;
+  values?: ReviewValues;
+};
+
+export type ExplainState = {
+  message?: string;
+  info?: { name: string; usedFor: string; askPharmacist: string[] };
+};
+
+export type SummaryState = {
+  message?: string;
+  summary?: string;
+};

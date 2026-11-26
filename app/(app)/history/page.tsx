@@ -8,6 +8,7 @@ import { StatsOverview } from "@/components/history/stats-overview";
 import { WeekStrip } from "@/components/history/week-strip";
 import { MedicineRates } from "@/components/history/medicine-rates";
 import { DayList } from "@/components/history/day-list";
+import { WeeklySummary } from "@/components/history/weekly-summary";
 
 export const metadata = {
   title: `History: ${brand.name}`,
@@ -56,6 +57,15 @@ export default async function HistoryPage() {
       <div className="mt-10">
         <StatsOverview streak={streak} week={week} month={month} />
       </div>
+
+      <section aria-labelledby="summary-heading" className="mt-12">
+        <h2 id="summary-heading" className="text-3xl">
+          Weekly summary
+        </h2>
+        <div className="mt-5">
+          <WeeklySummary />
+        </div>
+      </section>
 
       <section aria-labelledby="week-heading" className="mt-12">
         <h2 id="week-heading" className="text-3xl">

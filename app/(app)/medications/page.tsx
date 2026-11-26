@@ -26,12 +26,20 @@ export default async function MedicationsPage() {
             {medications.length === 1 ? "medicine" : "medicines"}
           </p>
         </div>
-        <Link
-          href="/medications/new"
-          className="rounded-full bg-ink px-7 py-3.5 text-lg font-bold text-white"
-        >
-          Add a medicine
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href="/medications/ai"
+            className="rounded-full border-2 border-ink px-7 py-3.5 text-lg font-bold hover:bg-ink hover:text-white"
+          >
+            Add with AI
+          </Link>
+          <Link
+            href="/medications/new"
+            className="rounded-full bg-ink px-7 py-3.5 text-lg font-bold text-white"
+          >
+            Add a medicine
+          </Link>
+        </div>
       </div>
 
       {medications.length === 0 ? (
@@ -72,6 +80,13 @@ export default async function MedicationsPage() {
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
+                  <Link
+                    href={`/medications/${medication.id}/about`}
+                    aria-label={`About ${medication.name}`}
+                    className="rounded-full border-2 border-ink px-5 py-2 font-bold hover:bg-ink hover:text-white"
+                  >
+                    About
+                  </Link>
                   <Link
                     href={`/medications/${medication.id}/schedule`}
                     aria-label={`Times for ${medication.name}`}
