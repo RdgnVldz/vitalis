@@ -1,4 +1,14 @@
-import { pgTable, text, timestamp, boolean, uuid, index } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  timestamp,
+  boolean,
+  uuid,
+  index,
+  integer,
+  date,
+  unique,
+} from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -80,3 +90,43 @@ export const medications = pgTable(
 );
 
 export type Medication = typeof medications.$inferSelect;
+
+export const schedules = pgTable(
+  "schedules",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    medicationId: uuid("medication_id")
+      .notNull()
+      .references(() => medications.id, { onDelete: "cascade" }),
+    timeOfDay: text("time_of_day").notNull(),
+    daysOfWeek: integer("days_of_week").array().notNull(),
+    startDate: date("start_date", { mode: "string" }).notNull(),
+    endDate: date("end_date", { mode: "string" }),
+    active: boolean("active").default(true).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("schedules_medication_id_idx").on(table.medicationId)]
+);
+
+export const doseLogs = pgTable(
+  "dose_logs",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    scheduleId: uuid("schedule_id")
+      .notNull()
+      .references(() => schedules.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    scheduledDate: date("scheduled_date", { mode: "string" }).notNull(),
+    status: text("status").notNull(),
+    actedAt: timestamp("acted_at").defaultNow().notNull(),
+  },
+  (table) => [
+    unique("dose_logs_schedule_date_unique").on(
+      table.scheduleId,
+      table.scheduledDate
+    ),
+    index("dose_logs_user_date_idx").on(table.userId, table.scheduledDate),
+  ]
+);

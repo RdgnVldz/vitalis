@@ -2,6 +2,7 @@ type TextFieldProps = {
   id: string;
   name: string;
   label: string;
+  type?: string;
   defaultValue?: string;
   hint?: string;
   error?: string;
@@ -13,6 +14,7 @@ export function TextField({
   id,
   name,
   label,
+  type = "text",
   defaultValue,
   hint,
   error,
@@ -52,7 +54,7 @@ export function TextField({
         <input
           id={id}
           name={name}
-          type="text"
+          type={type}
           defaultValue={defaultValue}
           autoComplete={autoComplete}
           aria-invalid={error ? true : undefined}

@@ -47,3 +47,33 @@ export function isUuid(value: string) {
 export type ArchiveState = {
   message?: string;
 };
+
+const dateString = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Pick a date.");
+
+export const scheduleSchema = z
+  .object({
+    time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Pick a time."),
+    days: z
+      .array(z.number().int().min(0).max(6))
+      .min(1, "Pick at least one day."),
+    startDate: dateString,
+    endDate: z.union([z.literal(""), dateString]),
+  })
+  .refine((value) => value.endDate === "" || value.endDate >= value.startDate, {
+    message: "The end date can't be before the start date.",
+    path: ["endDate"],
+  });
+
+export type ScheduleFormValues = {
+  time: string;
+  days: number[];
+  startDate: string;
+  endDate: string;
+};
+
+export type ScheduleFormState = {
+  errors?: Record<string, string>;
+  message?: string;
+  success?: boolean;
+  values?: ScheduleFormValues;
+};

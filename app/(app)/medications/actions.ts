@@ -35,13 +35,19 @@ export async function createMedication(
     return { errors: toFieldErrors(parsed.error), values };
   }
 
+  let createdId: string;
+
   try {
-    await db.insert(medications).values({
-      userId: session.user.id,
-      name: parsed.data.name,
-      dose: parsed.data.dose,
-      instructions: parsed.data.instructions || null,
-    });
+    const [created] = await db
+      .insert(medications)
+      .values({
+        userId: session.user.id,
+        name: parsed.data.name,
+        dose: parsed.data.dose,
+        instructions: parsed.data.instructions || null,
+      })
+      .returning({ id: medications.id });
+    createdId = created.id;
   } catch {
     return {
       message: "We couldn't save this medicine. Try again.",
@@ -51,7 +57,7 @@ export async function createMedication(
 
   revalidatePath("/dashboard");
   revalidatePath("/medications");
-  redirect("/medications");
+  redirect(`/medications/${createdId}/schedule`);
 }
 
 export async function updateMedication(
