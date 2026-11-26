@@ -2,7 +2,7 @@
 
 A medication reminder app: set up your medicines and times, get a reminder when a dose is due, mark doses as taken or skipped, and look back at your history. Optional AI features let you add a medicine by describing it in plain words.
 
-**Live demo:** [vitalis.vercel.app](https://vitalis.vercel.app) *(replace with your real URL)*
+**Live demo:** [https://vitalis-delta-nine.vercel.app/](https://vitalis-delta-nine.vercel.app/) *(replace with your real URL)*
 
 > The demo is public and anyone can sign up. Please don't enter real personal or medical data.
 
