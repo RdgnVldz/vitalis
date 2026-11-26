@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import {
   Bricolage_Grotesque,
   Atkinson_Hyperlegible_Next,
@@ -16,9 +16,18 @@ const atkinson = Atkinson_Hyperlegible_Next({
   variable: "--font-atkinson",
 });
 
+export const viewport: Viewport = {
+  themeColor: "#2a1740",
+};
+
 export const metadata: Metadata = {
   title: `${brand.name}: medication reminders`,
   description: brand.description,
+  appleWebApp: {
+    capable: true,
+    title: brand.name,
+    statusBarStyle: "default",
+  },
 };
 
 export default function RootLayout({

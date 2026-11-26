@@ -10,6 +10,7 @@ import {
 } from "@/db/schema";
 import { formatTime, getLocalNow } from "@/lib/time";
 import { pushConfigured, sendPushToUser } from "@/lib/push";
+import { brand } from "@/lib/brand";
 
 const REMINDER_WINDOW_MINUTES = 60;
 
@@ -19,6 +20,7 @@ type Candidate = {
   name: string;
   dose: string;
   time: string;
+  hideNames: boolean;
   date: string;
 };
 
@@ -32,6 +34,7 @@ export async function sendDueReminders(now: Date = new Date()) {
       scheduleId: schedules.id,
       userId: medications.userId,
       timezone: user.timezone,
+      hideNames: user.hideNames,
       name: medications.name,
       dose: medications.dose,
       time: schedules.timeOfDay,
@@ -63,6 +66,7 @@ export async function sendDueReminders(now: Date = new Date()) {
       name: row.name,
       dose: row.dose,
       time: row.time,
+      hideNames: row.hideNames,
       date: local.date,
     });
   }
@@ -118,7 +122,7 @@ export async function sendDueReminders(now: Date = new Date()) {
 
   for (const items of groups.values()) {
     summary.due += items.length;
-    const { userId, date, time } = items[0];
+    const { userId, date, time, hideNames } = items[0];
 
     const claimed = await db
       .insert(reminderLog)
@@ -141,7 +145,9 @@ export async function sendDueReminders(now: Date = new Date()) {
       title: `Time for your ${formatTime(time)} ${
         toSend.length === 1 ? "medicine" : "medicines"
       }`,
-      body: toSend.map((item) => `${item.name} ${item.dose}`).join(", "),
+      body: hideNames
+        ? `Open ${brand.name} to see what's due.`
+        : toSend.map((item) => `${item.name} ${item.dose}`).join(", "),
       tag: `doses-${date}-${time}`,
       url: "/dashboard",
     });

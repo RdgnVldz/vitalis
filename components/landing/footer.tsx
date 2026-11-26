@@ -51,10 +51,13 @@ export async function Footer() {
         </nav>
       </div>
 
-      <div className="mx-auto max-w-6xl px-6 pb-10">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 pb-10">
         <p className="text-ink-soft">
           © {year} {brand.name}. A reminder tool, not medical advice.
         </p>
+        <Link href="/privacy" className="font-bold underline">
+          Privacy
+        </Link>
       </div>
     </footer>
   );

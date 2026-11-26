@@ -6,8 +6,9 @@ import {
   savePushSubscription,
   sendTestNotification,
 } from "@/app/(app)/settings/actions";
+import { brand } from "@/lib/brand";
 
-type Status = "checking" | "unsupported" | "blocked" | "off" | "on";
+type Status = "checking" | "unsupported" | "install" | "blocked" | "off" | "on";
 
 const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? "";
 
@@ -29,6 +30,17 @@ export function PushToggle() {
 
   useEffect(() => {
     async function check() {
+
+      const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      const installed =
+        window.matchMedia("(display-mode: standalone)").matches ||
+        (navigator as Navigator & { standalone?: boolean }).standalone === true;
+
+      if (isIos && !installed) {
+        setStatus("install");
+        return;
+      }
+
       const supported =
         "serviceWorker" in navigator &&
         "PushManager" in window &&
@@ -165,6 +177,14 @@ export function PushToggle() {
       {message && (
         <p role="status" className="mt-4 font-bold">
           {message}
+        </p>
+      )}
+
+      {status === "install" && (
+        <p className="text-lg">
+          On iPhone and iPad, reminders work once {brand.name} is on your Home
+          Screen. Tap Share, then Add to Home Screen, open it from there, and
+          come back to this page to turn on reminders.
         </p>
       )}
     </div>

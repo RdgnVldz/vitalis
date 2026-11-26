@@ -51,7 +51,8 @@ export default async function HistoryPage() {
     <main className="mx-auto max-w-3xl px-6 py-12">
       <h1 className="text-4xl sm:text-5xl">History</h1>
       <p className="mt-2 text-xl text-ink-soft">
-        Doses count as missed once the day is over.
+        Doses count as missed once the day is over. You can fix the last 7
+        days.
       </p>
 
       <div className="mt-10">

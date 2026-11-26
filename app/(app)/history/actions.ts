@@ -7,8 +7,12 @@ import { summarySchema } from "@/lib/ai-schemas";
 import { daypartForTime, type Daypart } from "@/lib/dayparts";
 import { getHistory } from "@/lib/queries/history";
 import { currentStreak, perMedicine, rangeStats } from "@/lib/stats";
-import { shortWeekday } from "@/lib/time";
-import type { SummaryState } from "@/lib/validation";
+import { and, eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { db } from "@/db";
+import { doseLogs, medications, schedules } from "@/db/schema";
+import { canEditPastDay, getLocalNow, shortWeekday, weekdayOf } from "@/lib/time";
+import { isUuid, type SummaryState } from "@/lib/validation";
 
 export async function writeWeeklySummary(
   _previous: SummaryState,
@@ -78,4 +82,87 @@ export async function writeWeeklySummary(
   }
 
   return { summary: parsed.data.summary };
+}
+
+export async function setPastDoseStatus(
+  scheduleId: string,
+  date: string,
+  status: "taken" | "skipped",
+  _formData: FormData
+) {
+  const session = await requireSession();
+
+  if (!isUuid(scheduleId)) return;
+  if (status !== "taken" && status !== "skipped") return;
+
+  const today = getLocalNow(session.user.timezone).date;
+  if (!canEditPastDay(date, today)) return;
+
+  const [schedule] = await db
+    .select({
+      days: schedules.daysOfWeek,
+      startDate: schedules.startDate,
+      endDate: schedules.endDate,
+    })
+    .from(schedules)
+    .innerJoin(medications, eq(schedules.medicationId, medications.id))
+    .where(
+      and(
+        eq(schedules.id, scheduleId),
+        eq(schedules.active, true),
+        eq(medications.userId, session.user.id),
+        eq(medications.active, true)
+      )
+    )
+    .limit(1);
+
+  const applied =
+    schedule &&
+    schedule.days.includes(weekdayOf(date)) &&
+    schedule.startDate <= date &&
+    (!schedule.endDate || schedule.endDate >= date);
+
+  if (applied) {
+    await db
+      .insert(doseLogs)
+      .values({
+        scheduleId,
+        userId: session.user.id,
+        scheduledDate: date,
+        status,
+      })
+      .onConflictDoUpdate({
+        target: [doseLogs.scheduleId, doseLogs.scheduledDate],
+        set: { status, actedAt: new Date() },
+      });
+  }
+
+  revalidatePath("/history");
+  revalidatePath("/dashboard");
+}
+
+export async function undoPastDose(
+  scheduleId: string,
+  date: string,
+  _formData: FormData
+) {
+  const session = await requireSession();
+
+  if (!isUuid(scheduleId)) return;
+
+  const today = getLocalNow(session.user.timezone).date;
+  if (!canEditPastDay(date, today)) return;
+
+  await db
+    .delete(doseLogs)
+    .where(
+      and(
+        eq(doseLogs.scheduleId, scheduleId),
+        eq(doseLogs.userId, session.user.id),
+        eq(doseLogs.scheduledDate, date)
+      )
+    );
+
+  revalidatePath("/history");
+  revalidatePath("/dashboard");
 }

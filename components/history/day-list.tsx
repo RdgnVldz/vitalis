@@ -1,4 +1,13 @@
-import { addDays, formatDayHeading, formatTime } from "@/lib/time";
+import {
+  addDays,
+  canEditPastDay,
+  formatDayHeading,
+  formatTime,
+} from "@/lib/time";
+import {
+  setPastDoseStatus,
+  undoPastDose,
+} from "@/app/(app)/history/actions";
 import type { HistoryDay } from "@/lib/queries/history";
 import { StatusChip } from "@/components/history/status-chip";
 
@@ -15,6 +24,7 @@ export function DayList({
     <div className="space-y-4">
       {shown.map((day) => {
         const taken = day.entries.filter((e) => e.status === "taken").length;
+        const editable = canEditPastDay(day.date, today);
         const heading =
           day.date === today
             ? "Today"
@@ -45,7 +55,76 @@ export function DayList({
                       {entry.dose} at {formatTime(entry.time)}
                     </p>
                   </div>
-                  <StatusChip status={entry.status} />
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <StatusChip status={entry.status} />
+
+                    {editable && entry.status === "missed" && (
+                      <>
+                        <form
+                          action={setPastDoseStatus.bind(
+                            null,
+                            entry.scheduleId,
+                            day.date,
+                            "taken"
+                          )}
+                        >
+                          <button
+                            type="submit"
+                            className="rounded-full bg-ink px-4 py-1 text-sm font-bold text-white"
+                          >
+                            Mark as taken
+                            <span className="sr-only">
+                              {" "}
+                              {entry.name}, {heading}
+                            </span>
+                          </button>
+                        </form>
+                        <form
+                          action={setPastDoseStatus.bind(
+                            null,
+                            entry.scheduleId,
+                            day.date,
+                            "skipped"
+                          )}
+                        >
+                          <button
+                            type="submit"
+                            className="rounded-full border-2 border-ink px-4 py-0.5 text-sm font-bold hover:bg-ink hover:text-white"
+                          >
+                            Skip
+                            <span className="sr-only">
+                              {" "}
+                              {entry.name}, {heading}
+                            </span>
+                          </button>
+                        </form>
+                      </>
+                    )}
+
+                    {editable &&
+                      (entry.status === "taken" ||
+                        entry.status === "skipped") && (
+                        <form
+                          action={undoPastDose.bind(
+                            null,
+                            entry.scheduleId,
+                            day.date
+                          )}
+                        >
+                          <button
+                            type="submit"
+                            className="rounded-full border-2 border-ink px-3 py-0.5 text-sm font-bold"
+                          >
+                            Undo
+                            <span className="sr-only">
+                              {" "}
+                              {entry.name}, {heading}
+                            </span>
+                          </button>
+                        </form>
+                      )}
+                  </div>
                 </li>
               ))}
             </ul>

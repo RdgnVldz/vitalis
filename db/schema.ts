@@ -8,6 +8,7 @@ import {
   integer,
   date,
   unique,
+  bigint,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
@@ -17,6 +18,7 @@ export const user = pgTable("user", {
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
   timezone: text("timezone").default("UTC").notNull(),
+  hideNames: boolean("hide_names").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
@@ -180,3 +182,10 @@ export const aiUsage = pgTable(
   },
   (table) => [index("ai_usage_user_created_idx").on(table.userId, table.createdAt)]
 );
+
+export const rateLimit = pgTable("rate_limit", {
+  id: text("id").primaryKey(),
+  key: text("key"),
+  count: integer("count"),
+  lastRequest: bigint("last_request", { mode: "number" }),
+});

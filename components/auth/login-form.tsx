@@ -43,9 +43,11 @@ export function LoginForm() {
     if (error) {
       setPending(false);
       setFormError(
-        error.code === "INVALID_EMAIL_OR_PASSWORD"
-          ? "That email and password don't match. Check them and try again."
-          : "We couldn't log you in. Try again in a moment."
+        error.status === 429
+          ? "Too many attempts. Wait a minute, then try again."
+          : error.code === "INVALID_EMAIL_OR_PASSWORD"
+            ? "That email and password don't match. Check them and try again."
+            : "We couldn't log you in. Try again in a moment."
       );
       return;
     }

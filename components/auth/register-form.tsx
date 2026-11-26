@@ -48,9 +48,11 @@ export function RegisterForm() {
     if (error) {
       setPending(false);
       setFormError(
-        error.code?.startsWith("USER_ALREADY_EXISTS")
-          ? "An account with this email already exists. Use a different email, or log in."
-          : "We couldn't create your account. Check your details and try again."
+        error.status === 429
+          ? "Too many attempts. Wait a while, then try again."
+          : error.code?.startsWith("USER_ALREADY_EXISTS")
+            ? "An account with this email already exists. Use a different email, or log in."
+            : "We couldn't create your account. Check your details and try again."
       );
       
       return;

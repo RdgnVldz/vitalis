@@ -13,6 +13,14 @@ export const auth = betterAuth({
     enabled: true,
     minPasswordLength: 8,
   },
+  rateLimit: {
+    enabled: true,
+    storage: "database",
+    customRules: {
+      "/sign-in/email": { window: 60, max: 3 },
+      "/sign-up/email": { window: 3600, max: 3 },
+    },
+  },
   user: {
     additionalFields: {
       timezone: {

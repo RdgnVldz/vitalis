@@ -136,3 +136,13 @@ export function formatDayHeading(date: string) {
     timeZone: "UTC",
   }).format(new Date(`${date}T00:00:00Z`));
 }
+
+export const PAST_EDIT_DAYS = 7;
+
+export function canEditPastDay(date: string, today: string) {
+  return (
+    /^\d{4}-\d{2}-\d{2}$/.test(date) &&
+    date < today &&
+    date >= addDays(today, -PAST_EDIT_DAYS)
+  );
+}

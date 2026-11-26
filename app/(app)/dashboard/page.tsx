@@ -6,6 +6,7 @@ import { getDayInfo } from "@/lib/time";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { DayCompartments } from "@/components/dashboard/day-compartments";
 import { DayProgress } from "@/components/dashboard/day-progress";
+import { TimezoneNotice } from "@/components/dashboard/timezone-notice";
 
 export default async function DashboardPage() {
   const session = await requireSession();
@@ -26,6 +27,7 @@ export default async function DashboardPage() {
         {greeting}, {firstName}
       </h1>
       <p className="mt-2 text-xl text-ink-soft">{dateLabel}</p>
+      <TimezoneNotice saved={session.user.timezone ?? "UTC"} />
 
       {medications.length === 0 && (
         <div className="mt-10">

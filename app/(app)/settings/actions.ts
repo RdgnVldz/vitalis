@@ -13,6 +13,8 @@ import {
   type PushResult,
   type SettingsState,
 } from "@/lib/validation";
+import { redirect } from "next/navigation"; 
+import { auth } from "@/lib/auth";
 
 export async function savePushSubscription(
   input: unknown
@@ -121,4 +123,52 @@ export async function updateTimezone(
   revalidatePath("/dashboard");
   revalidatePath("/settings");
   return { success: true, message: "Timezone saved." };
+}
+
+export async function updateReminderPrivacy(
+  _previous: SettingsState,
+  formData: FormData
+): Promise<SettingsState> {
+  const session = await requireSession();
+  const hideNames = formData.get("hideNames") === "on";
+
+  try {
+    await db
+      .update(user)
+      .set({ hideNames })
+      .where(eq(user.id, session.user.id));
+  } catch {
+    return { success: false, message: "We couldn't save this. Try again." };
+  }
+
+  revalidatePath("/settings");
+  return { success: true, message: "Saved." };
+}
+
+export async function deleteAccount(
+  _previous: SettingsState,
+  formData: FormData
+): Promise<SettingsState> {
+  const session = await requireSession();
+
+  if (String(formData.get("confirmation") ?? "").trim() !== "DELETE") {
+    return { success: false, message: "Type DELETE to confirm." };
+  }
+
+  try {
+    await db.delete(user).where(eq(user.id, session.user.id));
+  } catch {
+    return {
+      success: false,
+      message: "We couldn't delete your account. Try again.",
+    };
+  }
+
+  try {
+    await auth.api.signOut({ headers: await headers() });
+  } catch {
+    // The session is already gone, so there is nothing left to sign out.
+  }
+
+  redirect("/");
 }
