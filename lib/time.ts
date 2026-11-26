@@ -113,3 +113,26 @@ export function isValidTimezone(timezone: string) {
     return false;
   }
 }
+
+export function addDays(date: string, amount: number) {
+  const value = new Date(`${date}T00:00:00Z`);
+  value.setUTCDate(value.getUTCDate() + amount);
+  return value.toISOString().slice(0, 10);
+}
+
+export function weekdayOf(date: string) {
+  return new Date(`${date}T00:00:00Z`).getUTCDay();
+}
+
+export function shortWeekday(date: string) {
+  return weekdayLabels[weekdayOf(date)];
+}
+
+export function formatDayHeading(date: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${date}T00:00:00Z`));
+}
