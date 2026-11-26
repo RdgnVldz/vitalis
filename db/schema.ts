@@ -130,3 +130,40 @@ export const doseLogs = pgTable(
     index("dose_logs_user_date_idx").on(table.userId, table.scheduledDate),
   ]
 );
+
+export const pushSubscriptions = pgTable(
+  "push_subscriptions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    endpoint: text("endpoint").notNull().unique(),
+    p256dh: text("p256dh").notNull(),
+    auth: text("auth").notNull(),
+    userAgent: text("user_agent"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("push_subscriptions_user_id_idx").on(table.userId)]
+);
+
+export const reminderLog = pgTable(
+  "reminder_log",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    scheduleId: uuid("schedule_id")
+      .notNull()
+      .references(() => schedules.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    scheduledDate: date("scheduled_date", { mode: "string" }).notNull(),
+    sentAt: timestamp("sent_at").defaultNow().notNull(),
+  },
+  (table) => [
+    unique("reminder_log_schedule_date_unique").on(
+      table.scheduleId,
+      table.scheduledDate
+    ),
+  ]
+);

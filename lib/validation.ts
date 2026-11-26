@@ -77,3 +77,39 @@ export type ScheduleFormState = {
   success?: boolean;
   values?: ScheduleFormValues;
 };
+
+function isSafeEndpoint(value: string) {
+  try {
+    const url = new URL(value);
+    const host = url.hostname;
+    return (
+      url.protocol === "https:" &&
+      host.includes(".") &&
+      !/^[\d.]+$/.test(host) &&
+      host !== "localhost"
+    );
+  } catch {
+    return false;
+  }
+}
+
+export const pushSubscriptionSchema = z.object({
+  endpoint: z
+    .string()
+    .max(2000)
+    .refine(isSafeEndpoint, "Invalid push endpoint."),
+  keys: z.object({
+    p256dh: z.string().min(1).max(500),
+    auth: z.string().min(1).max(200),
+  }),
+});
+
+export type SettingsState = {
+  message?: string;
+  success?: boolean;
+};
+
+export type PushResult = {
+  ok: boolean;
+  message: string;
+};

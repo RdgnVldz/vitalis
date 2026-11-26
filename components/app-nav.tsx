@@ -6,13 +6,14 @@ import { usePathname } from "next/navigation";
 const links = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/medications", label: "Medicines" },
+  { href: "/settings", label: "Settings" },
 ];
 
 export function AppNav({ className }: { className?: string }) {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Main" className={`flex gap-2 ${className ?? ""}`}>
+    <nav aria-label="Main" className={`flex flex-wrap gap-2 ${className ?? ""}`}>
       {links.map((link) => {
         const active =
           pathname === link.href || pathname.startsWith(`${link.href}/`);

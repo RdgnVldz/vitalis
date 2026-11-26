@@ -104,3 +104,12 @@ export function formatDateLabel(date: string) {
     timeZone: "UTC",
   }).format(new Date(`${date}T00:00:00Z`));
 }
+
+export function isValidTimezone(timezone: string) {
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: timezone });
+    return true;
+  } catch {
+    return false;
+  }
+}
